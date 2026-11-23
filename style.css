@@ -1,0 +1,163 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: #f8edf1;
+  color: #57434c;
+  font-family: sans-serif;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+header h1 {
+  letter-spacing: 3px;
+}
+
+.game {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 950px;
+  margin: auto;
+}
+
+.character-panel,
+.closet-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.character-panel {
+  width: 350px;
+  text-align: center;
+}
+
+.closet-panel {
+  width: 520px;
+  min-width: 0;
+}
+
+.character {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #fff9fb;
+  border-radius: 12px;
+}
+
+.character img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.character img.layer {
+  pointer-events: none;
+}
+
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 14px;
+  margin: 3px;
+  background: #f3dce5;
+  color: #57434c;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #e9bfd0;
+}
+
+#categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 15px 0;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.item {
+  border: 2px solid #f5e7ed;
+  border-radius: 10px;
+  padding: 7px;
+  background: #fffafd;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.item:hover {
+  border-color: #d68ba9;
+  background: #fff0f5;
+}
+
+.item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+.item p {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  margin: 5px 0;
+}
+
+#reset-button {
+  margin-top: 12px;
+}
+
+#claim-area {
+  max-width: 450px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  text-align: center;
+  background: white;
+  border: 2px solid #edc6d6;
+  border-radius: 16px;
+}
+
+#claim-area[hidden] {
+  display: none;
+}
+
+#claim-button {
+  background: #d98eae;
+  color: white;
+  font-weight: bold;
+}
+
+@media (max-width: 700px) {
+  .game {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .character-panel,
+  .closet-panel {
+    width: 100%;
+    max-width: 450px;
+  }
+
+  .items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

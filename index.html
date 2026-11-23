@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Closet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>My Closet</h1>
+    <p>お気に入りの衣装を集めよう！</p>
+  </header>
+
+  <section id="claim-area" hidden>
+    <h2>NEW ITEM!</h2>
+    <p id="claim-name">新しい衣装が届いたよ！</p>
+    <button id="claim-button">クローゼットに追加する</button>
+  </section>
+
+  <main class="game">
+
+    <section class="character-panel">
+      <h2>MY COORDINATE</h2>
+
+      <div class="character">
+        <img src="images/base.png" alt="キャラクター">
+
+        <img id="hair" class="layer" alt="">
+        <img id="top" class="layer" alt="">
+        <img id="bottom" class="layer" alt="">
+        <img id="onepiece" class="layer" alt="">
+        <img id="shoes" class="layer" alt="">
+        <img id="accessory" class="layer" alt="">
+      </div>
+
+      <button id="reset-button">コーデをリセット</button>
+    </section>
+
+    <section class="closet-panel">
+      <h2>MY CLOSET</h2>
+
+      <p id="collection-count">所持アイテム：0種類</p>
+
+      <nav id="categories">
+        <button data-category="all">全部</button>
+        <button data-category="hair">髪型</button>
+        <button data-category="top">トップス</button>
+        <button data-category="bottom">ボトムス</button>
+        <button data-category="onepiece">ワンピース</button>
+        <button data-category="shoes">靴</button>
+        <button data-category="accessory">アクセ</button>
+      </nav>
+
+      <div id="items" class="items"></div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
