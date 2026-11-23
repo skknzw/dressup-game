@@ -8,6 +8,12 @@ const items = [
     image: "images/hair001.png"
   },
   {
+    id: "hair002",
+    name: "テストヘア2",
+    category: "hair",
+    image: "images/hair002.png"
+  },
+  {
     id: "top001",
     name: "テストトップス",
     category: "top",
@@ -36,17 +42,32 @@ const items = [
     name: "シューズ２",
     category: "shoes",
     image: "images/shoes002.png"
+  },
+  {
+    id: "accessory001",
+    name: "リボン",
+    category: "accessory",
+    image: "images/accessory001.png"
+  },
+  {
+    id: "accessory002",
+    name: "ティアラ",
+    category: "accessory",
+    image: "images/accessory002.png"
   }
 ];
 
 // 最初から持っている衣装
 const starterItems = [
   "hair001",
+  "hair002",
   "top001",
   "bottom001",
   "onepiece001",
   "shoes001",
-  "shoes002"
+  "shoes002",
+  "accessory001",
+  "accessory002"
 ];
 
 // ブラウザに保存された所持情報を読み込む
@@ -124,11 +145,18 @@ function renderItems() {
     card.appendChild(image);
     card.appendChild(name);
 
+    // 衣装をタップして着せ替え・脱ぐ
     card.addEventListener("click", () => {
       const layer = layers[item.category];
 
       if (layer) {
-        layer.src = item.image;
+        // 同じ衣装をもう一度タップしたら脱ぐ
+        if (layer.getAttribute("src") === item.image) {
+          layer.removeAttribute("src");
+        } else {
+          // 違う衣装なら着替える
+          layer.src = item.image;
+        }
       }
     });
 
