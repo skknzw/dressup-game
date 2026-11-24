@@ -1,76 +1,120 @@
 
-// 衣装データ
+// 衣装・背景データ
 const items = [
   {
     id: "hair001",
-    name: "テストヘア",
+    name: "みつあみ",
     category: "hair",
-    image: "images/hair001.png"
+    image: "images/hair001.png",
+    thumbnail: "images/thumbnails/hair001.jpg"
   },
   {
     id: "hair002",
-    name: "テストヘア2",
+    name: "ツインテール",
     category: "hair",
-    image: "images/hair002.png"
+    image: "images/hair002.png",
+    thumbnail: "images/thumbnails/hair002.jpg"
   },
   {
     id: "top001",
-    name: "テストトップス",
+    name: "シャツ",
     category: "top",
-    image: "images/top001.png"
+    image: "images/top001.png",
+    thumbnail: "images/thumbnails/top001.jpg"
   },
   {
     id: "bottom001",
-    name: "テストスカート",
+    name: "ストライプスカート",
     category: "bottom",
-    image: "images/bottom001.png"
+    image: "images/bottom001.png",
+    thumbnail: "images/thumbnails/bottom001.jpg"
+  },
+  {
+    id: "bottom002",
+    name: "マーメイドスカート",
+    category: "bottom",
+    image: "images/bottom002.png",
+    thumbnail: "images/thumbnails/bottom002.jpg",
+    hideBase: ["legs"]
   },
   {
     id: "onepiece001",
-    name: "お気に入りワンピース",
+    name: "ワンピース",
     category: "onepiece",
-    image: "images/onepiece001.png"
+    image: "images/onepiece001.png",
+    thumbnail: "images/thumbnails/onepiece001.jpg"
   },
   {
     id: "shoes001",
     name: "シューズ",
     category: "shoes",
-    image: "images/shoes001.png"
+    image: "images/shoes001.png",
+    thumbnail: "images/thumbnails/shoes001.jpg"
   },
   {
     id: "shoes002",
-    name: "シューズ２",
+    name: "シューズ2",
     category: "shoes",
-    image: "images/shoes002.png"
+    image: "images/shoes002.png",
+    thumbnail: "images/thumbnails/shoes002.jpg"
   },
   {
     id: "accessory001",
     name: "リボン",
     category: "accessory",
-    image: "images/accessory001.png"
+    image: "images/accessory001.png",
+    thumbnail: "images/thumbnails/accessory001.jpg"
   },
   {
     id: "accessory002",
     name: "ティアラ",
     category: "accessory",
-    image: "images/accessory002.png"
+    image: "images/accessory002.png",
+    thumbnail: "images/thumbnails/accessory002.jpg"
+  },
+
+  // 背景
+  {
+    id: "room001",
+    name: "庭",
+    category: "background",
+    image: "images/backgrounds/room001.jpg",
+    thumbnail: "images/thumbnails/room001.jpg"
+  },
+  {
+    id: "room002",
+    name: "夜空",
+    category: "background",
+    image: "images/backgrounds/room002.jpg",
+    thumbnail: "images/thumbnails/room002.jpg"
+  },
+  {
+    id: "room003",
+    name: "遊園地",
+    category: "background",
+    image: "images/backgrounds/room003.jpg",
+    thumbnail: "images/thumbnails/room003.jpg"
   }
 ];
 
-// 最初から持っている衣装
+// 最初から持っている衣装・背景
 const starterItems = [
   "hair001",
   "hair002",
   "top001",
   "bottom001",
+  "bottom002",
   "onepiece001",
   "shoes001",
   "shoes002",
   "accessory001",
-  "accessory002"
+  "accessory002",
+  "room001",
+  "room002",
+  "room003"
 ];
 
-// ブラウザに保存された所持情報を読み込む
+// 保存済みアイテムを読み込む
 let savedItems = [];
 
 try {
@@ -85,7 +129,7 @@ try {
   savedItems = [];
 }
 
-// 初期衣装は必ず所持状態にする
+// 初期所持アイテムを統合
 let ownedItems = [...new Set([
   ...starterItems,
   ...savedItems
@@ -101,7 +145,18 @@ function saveItems() {
 
 saveItems();
 
-// キャラクターの着せ替えパーツ
+// ベース画像
+const baseParts = {
+  body: document.getElementById("base-body"),
+  arms: document.getElementById("base-arms"),
+  legs: document.getElementById("base-legs")
+};
+
+// 背景画像
+const backgroundLayer =
+  document.getElementById("background");
+
+// 衣装レイヤー
 const layers = {
   hair: document.getElementById("hair"),
   top: document.getElementById("top"),
@@ -111,13 +166,123 @@ const layers = {
   accessory: document.getElementById("accessory")
 };
 
+// クローゼット関連
 const itemsArea = document.getElementById("items");
 const countText = document.getElementById("collection-count");
+
 const categoryButtons =
   document.querySelectorAll("#categories button");
-const resetButton = document.getElementById("reset-button");
+
+const resetButton =
+  document.getElementById("reset-button");
 
 let currentCategory = "all";
+
+// 現在着ている衣装
+const equippedItems = {
+  hair: null,
+  top: null,
+  bottom: null,
+  onepiece: null,
+  shoes: null,
+  accessory: null
+};
+
+// 現在選択している背景
+let equippedBackground = null;
+
+// 初期装備を設定
+function setInitialItems() {
+  const initialHair = items.find(
+    item => item.id === "hair001"
+  );
+
+  const initialBackground = items.find(
+    item => item.id === "room001"
+  );
+
+  // 初期髪型
+  if (initialHair && layers.hair) {
+    layers.hair.src = initialHair.image;
+    equippedItems.hair = initialHair;
+  }
+
+  // 初期背景
+  if (initialBackground && backgroundLayer) {
+    backgroundLayer.src = initialBackground.image;
+    equippedBackground = initialBackground;
+  }
+}
+
+// ベース画像の表示状態を更新
+function updateBaseParts() {
+  const hiddenParts = new Set();
+
+  Object.values(equippedItems).forEach(item => {
+    if (item && Array.isArray(item.hideBase)) {
+      item.hideBase.forEach(part => {
+        hiddenParts.add(part);
+      });
+    }
+  });
+
+  Object.entries(baseParts).forEach(([part, image]) => {
+    if (image) {
+      image.hidden = hiddenParts.has(part);
+    }
+  });
+}
+
+// アイテムを着せ替える
+function equipItem(item) {
+
+  // 背景の場合
+  if (item.category === "background") {
+
+    // 選択中の背景を押しても解除しない
+    if (equippedBackground?.id === item.id) {
+      return;
+    }
+
+    // 別の背景に切り替える
+    backgroundLayer.src = item.image;
+    equippedBackground = item;
+
+    return;
+  }
+
+  // 衣装の場合
+  const layer = layers[item.category];
+
+  if (!layer) return;
+
+  // 髪型は脱げない
+  if (item.category === "hair") {
+
+    // 選択中の髪型なら何もしない
+    if (equippedItems.hair?.id === item.id) {
+      return;
+    }
+
+    // 別の髪型に切り替える
+    layer.src = item.image;
+    equippedItems.hair = item;
+
+    return;
+  }
+
+  // 同じ衣装を再度押したら脱ぐ
+  if (equippedItems[item.category]?.id === item.id) {
+    layer.removeAttribute("src");
+    equippedItems[item.category] = null;
+  } else {
+    // 違う衣装なら着替える
+    layer.src = item.image;
+    equippedItems[item.category] = item;
+  }
+
+  updateBaseParts();
+}
 
 // クローゼットを表示
 function renderItems() {
@@ -136,7 +301,7 @@ function renderItems() {
     card.className = "item";
 
     const image = document.createElement("img");
-    image.src = item.image;
+    image.src = item.thumbnail || item.image;
     image.alt = item.name;
 
     const name = document.createElement("p");
@@ -145,19 +310,8 @@ function renderItems() {
     card.appendChild(image);
     card.appendChild(name);
 
-    // 衣装をタップして着せ替え・脱ぐ
     card.addEventListener("click", () => {
-      const layer = layers[item.category];
-
-      if (layer) {
-        // 同じ衣装をもう一度タップしたら脱ぐ
-        if (layer.getAttribute("src") === item.image) {
-          layer.removeAttribute("src");
-        } else {
-          // 違う衣装なら着替える
-          layer.src = item.image;
-        }
-      }
+      equipItem(item);
     });
 
     itemsArea.appendChild(card);
@@ -177,12 +331,30 @@ categoryButtons.forEach(button => {
 
 // コーデをリセット
 resetButton.addEventListener("click", () => {
-  Object.values(layers).forEach(layer => {
-    layer.removeAttribute("src");
+
+  // 衣装をすべて外す
+  Object.keys(layers).forEach(category => {
+
+    // 髪型は初期装備を維持
+    if (category === "hair") return;
+
+    const layer = layers[category];
+
+    if (layer) {
+      layer.removeAttribute("src");
+    }
+
+    equippedItems[category] = null;
   });
+
+  // 背景は初期装備を維持
+  // room001に戻す
+  setInitialItems();
+
+  updateBaseParts();
 });
 
-// QRコードから衣装を受け取る
+// QRコードからアイテムを受け取る
 const claimArea = document.getElementById("claim-area");
 const claimName = document.getElementById("claim-name");
 const claimButton = document.getElementById("claim-button");
@@ -198,17 +370,23 @@ const claimItem = items.find(
 );
 
 if (claimItem) {
+
   if (ownedItems.includes(claimItem.id)) {
-    claimName.textContent = "この衣装はすでに持っているよ！";
+    claimName.textContent =
+      "このアイテムはすでに持っているよ！";
+
     claimButton.hidden = true;
     claimArea.hidden = false;
+
   } else {
+
     claimName.textContent =
       `${claimItem.name} が届いたよ！`;
 
     claimArea.hidden = false;
 
     claimButton.addEventListener("click", () => {
+
       if (!ownedItems.includes(claimItem.id)) {
         ownedItems.push(claimItem.id);
         saveItems();
@@ -224,4 +402,6 @@ if (claimItem) {
 }
 
 // 最初の表示
+setInitialItems();
+updateBaseParts();
 renderItems();

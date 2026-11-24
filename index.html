@@ -7,13 +7,10 @@
   <title>My Closet</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <header>
-    <h1>My Closet</h1>
-    <p>お気に入りの衣装を集めよう！</p>
-  </header>
-
+  <!-- QRコードから衣装を受け取るエリア -->
   <section id="claim-area" hidden>
     <h2>NEW ITEM!</h2>
     <p id="claim-name">新しい衣装が届いたよ！</p>
@@ -22,30 +19,47 @@
 
   <main class="game">
 
+    <!-- キャラクターエリア -->
     <section class="character-panel">
       <h2>MY COORDINATE</h2>
 
       <div class="character">
-        <img src="images/base.png" alt="キャラクター">
 
+        <!-- 背景 -->
+        <img
+          id="background"
+          class="background-layer"
+          alt=""
+        >
+
+        <!-- ベース画像 -->
+        <img src="images/base-body.png" id="base-body" alt="">
+        <img src="images/base-arms.png" id="base-arms" alt="">
+        <img src="images/base-legs.png" id="base-legs" alt="">
+
+        <!-- 着せ替え画像 -->
         <img id="hair" class="layer" alt="">
         <img id="top" class="layer" alt="">
         <img id="bottom" class="layer" alt="">
         <img id="onepiece" class="layer" alt="">
         <img id="shoes" class="layer" alt="">
         <img id="accessory" class="layer" alt="">
+
       </div>
 
       <button id="reset-button">コーデをリセット</button>
     </section>
 
+    <!-- クローゼットエリア -->
     <section class="closet-panel">
       <h2>MY CLOSET</h2>
 
       <p id="collection-count">所持アイテム：0種類</p>
 
+      <!-- カテゴリー -->
       <nav id="categories">
         <button data-category="all">全部</button>
+        <button data-category="background">背景</button>
         <button data-category="hair">髪型</button>
         <button data-category="top">トップス</button>
         <button data-category="bottom">ボトムス</button>
@@ -54,11 +68,14 @@
         <button data-category="accessory">アクセ</button>
       </nav>
 
+      <!-- アイテム一覧 -->
       <div id="items" class="items"></div>
+
     </section>
 
   </main>
 
   <script src="script.js"></script>
+
 </body>
 </html>

@@ -9,52 +9,60 @@ body {
   background: #f8edf1;
   color: #57434c;
   font-family: sans-serif;
+  overflow: hidden;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-header h1 {
-  letter-spacing: 3px;
-}
-
+/* ゲーム全体 */
 .game {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 350px) minmax(0, 520px);
   justify-content: center;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 20px;
   max-width: 950px;
+  height: calc(100vh - 32px);
+  height: calc(100svh - 32px);
   margin: auto;
+  min-height: 0;
 }
 
+/* パネル共通 */
 .character-panel,
 .closet-panel {
   background: white;
   border-radius: 16px;
   padding: 18px;
-}
-
-.character-panel {
-  width: 350px;
-  text-align: center;
-}
-
-.closet-panel {
-  width: 520px;
   min-width: 0;
+  min-height: 0;
 }
 
+/* キャラクターエリア */
+.character-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  overflow: hidden;
+}
+
+.character-panel h2 {
+  flex-shrink: 0;
+}
+
+/* キャラクター表示 */
 .character {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 63 / 88;
+  flex: none;
+  min-height: 0;
   overflow: hidden;
   background: #fff9fb;
   border-radius: 12px;
 }
 
+/* 画像共通 */
 .character img {
   position: absolute;
   inset: 0;
@@ -63,25 +71,83 @@ header h1 {
   object-fit: contain;
 }
 
+/* 背景 */
+.character img.background-layer {
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ベース画像 */
+#base-body {
+  z-index: 1;
+}
+
+#base-legs {
+  z-index: 2;
+}
+
+#base-arms {
+  z-index: 3;
+}
+
+/* 衣装の重なり順 */
+#shoes {
+  z-index: 4;
+}
+
+#top {
+  z-index: 5;
+}
+
+#bottom {
+  z-index: 6;
+}
+
+#onepiece {
+  z-index: 7;
+}
+
+#hair {
+  z-index: 8;
+}
+
+#accessory {
+  z-index: 9;
+}
+
+/* 非表示パーツ */
+.character img[hidden] {
+  display: none;
+}
+
+/* 着せ替え画像 */
 .character img.layer {
   pointer-events: none;
 }
 
-button {
-  border: 0;
-  border-radius: 9px;
-  padding: 10px 14px;
-  margin: 3px;
-  background: #f3dce5;
-  color: #57434c;
-  cursor: pointer;
-  font-size: 14px;
+/* リセットボタン */
+#reset-button {
+  flex-shrink: 0;
+  margin-top: 12px;
 }
 
-button:hover {
-  background: #e9bfd0;
+/* クローゼット */
+.closet-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
+/* 固定部分 */
+.closet-panel h2,
+#collection-count,
+#categories {
+  flex-shrink: 0;
+}
+
+/* カテゴリー */
 #categories {
   display: flex;
   flex-wrap: wrap;
@@ -89,12 +155,39 @@ button:hover {
   margin: 15px 0;
 }
 
+/* アイテム一覧 */
 .items {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: start;
   gap: 10px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #dba6ba #fff0f5;
 }
 
+/* スクロールバー */
+.items::-webkit-scrollbar {
+  width: 8px;
+}
+
+.items::-webkit-scrollbar-track {
+  background: #fff0f5;
+  border-radius: 10px;
+}
+
+.items::-webkit-scrollbar-thumb {
+  background: #dba6ba;
+  border-radius: 10px;
+}
+
+/* アイテム */
 .item {
   border: 2px solid #f5e7ed;
   border-radius: 10px;
@@ -121,14 +214,27 @@ button:hover {
   margin: 5px 0;
 }
 
-#reset-button {
-  margin-top: 12px;
+/* ボタン */
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 10px 14px;
+  margin: 3px;
+  background: #f3dce5;
+  color: #57434c;
+  cursor: pointer;
+  font-size: 14px;
 }
 
+button:hover {
+  background: #e9bfd0;
+}
+
+/* NEW ITEM */
 #claim-area {
   max-width: 450px;
-  margin: 0 auto 20px;
-  padding: 20px;
+  margin: 0 auto 12px;
+  padding: 12px;
   text-align: center;
   background: white;
   border: 2px solid #edc6d6;
@@ -145,19 +251,61 @@ button:hover {
   font-weight: bold;
 }
 
+/* スマホ */
 @media (max-width: 700px) {
+  body {
+    padding: 8px;
+  }
+
   .game {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    height: calc(100vh - 16px);
+    height: calc(100svh - 16px);
   }
 
   .character-panel,
   .closet-panel {
-    width: 100%;
-    max-width: 450px;
+    padding: 8px;
+  }
+
+  .character-panel h2,
+  .closet-panel h2 {
+    font-size: 14px;
   }
 
   .items {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
   }
+
+  #categories {
+    gap: 2px;
+    margin: 8px 0;
+  }
+
+  #categories button {
+    font-size: 10px;
+    padding: 6px 4px;
+    margin: 1px;
+  }
+
+  button {
+    font-size: 11px;
+    padding: 7px 5px;
+  }
+
+  .item {
+    padding: 3px;
+  }
+
+  .item p {
+    font-size: 10px;
+  }
+}
+
+/* 画像が設定されていないレイヤーは非表示 */
+.character img:not([src]),
+.character img[src=""] {
+  display: none;
 }
