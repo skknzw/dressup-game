@@ -506,3 +506,31 @@ button:hover {
     max-height: calc(96svh - 90px);
   }
 }
+
+
+/* 完成画面の補足文 */
+.save-modal-note {
+  margin: -5px 0 2px;
+  color: #806b74;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+
+.save-modal-hint {
+  margin: -5px 0 2px;
+  color: #8a737d;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: normal;
+}
+
+
+/* ポップアップ内の案内文 */
+.save-modal-hint {
+  margin: -5px 0 2px;
+  color: #806b74;
+  font-size: 12px;
+  line-height: 1.5;
+}

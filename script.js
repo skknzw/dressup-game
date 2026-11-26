@@ -470,6 +470,13 @@ if (claimItem) {
   }
 }
 
+// Canvasへの書き出しを可能にするため、キャラクター画像はCORSモードで読み込む
+// ※ HTML側にもcrossorigin="anonymous"を指定し、初期画像の読み込み前に適用する
+const characterImages = document.querySelectorAll(".character img");
+characterImages.forEach(image => {
+  image.crossOrigin = "anonymous";
+});
+
 // 最初の表示
 setInitialItems();
 updateTopBottomOrder();
@@ -490,11 +497,18 @@ let currentJpegBlob = null;
 let currentJpegUrl = null;
 
 function waitForImage(image) {
-  if (image.complete && image.naturalWidth > 0) return Promise.resolve();
+  // 読み込み済みなら即時に進む。読み込み失敗も待ち続けずエラーにする
+  if (image.complete) {
+    if (image.naturalWidth > 0) return Promise.resolve();
+    return Promise.reject(
+      new Error(`画像を読み込めませんでした: ${image.src || image.id}`)
+    );
+  }
+
   return new Promise((resolve, reject) => {
     image.addEventListener("load", resolve, { once: true });
     image.addEventListener("error", () => {
-      reject(new Error(`画像を読み込めませんでした: ${image.src}`));
+      reject(new Error(`画像を読み込めませんでした: ${image.src || image.id}`));
     }, { once: true });
   });
 }
@@ -591,6 +605,7 @@ async function createCoordinateJpeg() {
 
 saveCoordinateButton.addEventListener("click", async () => {
   saveCoordinateButton.disabled = true;
+  const originalLabel = "コーデ画像を保存";
   saveCoordinateButton.textContent = "画像を作成中…";
 
   try {
@@ -603,11 +618,14 @@ saveCoordinateButton.addEventListener("click", async () => {
     savedCoordinatePreview.src = currentJpegUrl;
     saveModal.hidden = false;
   } catch (error) {
-    console.error(error);
-    alert("画像を作成できませんでした。画像ファイルの場所や読み込み状態を確認してね。");
+    console.error("コーデ画像の作成エラー:", error);
+    alert(
+      "画像を作成できませんでした。\n" +
+      (error && error.message ? error.message : "画像ファイルの読み込み状態を確認してください。")
+    );
   } finally {
     saveCoordinateButton.disabled = false;
-    saveCoordinateButton.textContent = "コーデ画像を保存";
+    saveCoordinateButton.textContent = originalLabel;
   }
 });
 

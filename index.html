@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Closet</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -23,25 +23,25 @@
       <h2>MY COORDINATE</h2>
 
       <div class="character">
-        <img id="background" class="background-layer" alt="">
+        <img id="background" class="background-layer" crossorigin="anonymous" alt="">
 
         <!-- 素体 -->
-        <img src="images/base-body.png" id="base-body" alt="">
-        <img src="images/base-arms.png" id="base-arms" alt="">
-        <img src="images/base-legs.png" id="base-legs" alt="">
+        <img src="images/base-body.png" id="base-body" crossorigin="anonymous" alt="">
+        <img src="images/base-arms.png" id="base-arms" crossorigin="anonymous" alt="">
+        <img src="images/base-legs.png" id="base-legs" crossorigin="anonymous" alt="">
 
         <!-- 着せ替えレイヤー -->
-        <img id="shoes" class="layer" alt="">
-        <img id="bottom" class="layer" alt="">
-        <img id="top" class="layer" alt="">
-        <img id="onepiece" class="layer" alt="">
-        <img id="outer" class="layer" alt="">
-        <img id="hair" class="layer" alt="">
-        <img id="accessory" class="layer" alt="">
+        <img id="shoes" crossorigin="anonymous" class="layer" alt="">
+        <img id="bottom" crossorigin="anonymous" class="layer" alt="">
+        <img id="top" crossorigin="anonymous" class="layer" alt="">
+        <img id="onepiece" crossorigin="anonymous" class="layer" alt="">
+        <img id="outer" crossorigin="anonymous" class="layer" alt="">
+        <img id="hair" crossorigin="anonymous" class="layer" alt="">
+        <img id="accessory" crossorigin="anonymous" class="layer" alt="">
       </div>
 
       <div class="character-buttons">
-        <button id="save-coordinate-button" type="button">コーデ画像を保存</button>
+        <button id="save-coordinate-button" type="button">完成</button>
         <button id="reset-button" type="button">コーデをリセット</button>
       </div>
     </section>
@@ -76,6 +76,9 @@
            role="dialog" aria-modal="true" aria-labelledby="save-modal-title">
     <div class="save-modal-content">
       <h2 id="save-modal-title">コーデ完成！</h2>
+      <p class="save-modal-hint">スマートフォンを縦向きに戻すと大きく表示されるよ。</p>
+      <p class="save-modal-hint">スマートフォンを縦向きに戻すと大きく表示されるよ。</p>
+      <p class="save-modal-note">スマートフォンを縦向きに戻すと大きく表示されるよ。</p>
       <img id="saved-coordinate-preview" alt="完成したコーデ">
       <div class="save-modal-buttons">
         <button id="download-jpeg-button" type="button">JPEGで保存</button>
@@ -84,6 +87,6 @@
     </div>
   </section>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
