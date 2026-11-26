@@ -397,3 +397,32 @@ button:hover {
     margin-top: 5px;
   }
 }
+
+/* 画面の高さに合わせてゲーム全体を広げる */
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.game {
+  height: calc(100vh - 32px);
+  height: calc(100svh - 32px);
+  min-height: 0;
+}
+
+/* スマホ横向き */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  body {
+    padding: 6px;
+  }
+
+  .game {
+    height: calc(100vh - 12px);
+    height: calc(100svh - 12px);
+  }
+}
