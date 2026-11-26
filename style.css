@@ -1,6 +1,15 @@
 
+/* =========================
+   基本設定
+========================= */
+
 * {
   box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
@@ -10,7 +19,13 @@ body {
   color: #57434c;
   font-family: sans-serif;
   overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
 }
+
+/* =========================
+   ゲーム全体
+========================= */
 
 .game {
   display: grid;
@@ -25,7 +40,10 @@ body {
   min-height: 0;
 }
 
-/* パネル共通 */
+/* =========================
+   パネル共通
+========================= */
+
 .character-panel,
 .closet-panel {
   background: white;
@@ -35,7 +53,10 @@ body {
   min-height: 0;
 }
 
-/* キャラクター側 */
+/* =========================
+   キャラクター側
+========================= */
+
 .character-panel {
   display: flex;
   flex-direction: column;
@@ -49,17 +70,22 @@ body {
   flex-shrink: 0;
 }
 
+/* キャラクター表示枠：68:88 */
 .character {
   position: relative;
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-  aspect-ratio: 63 / 88;
+  width: min(100%, calc((100svh - 120px) * 68 / 88));
+  height: auto;
+  flex: 0 1 auto;
+  aspect-ratio: 68 / 88;
+  max-width: 100%;
+  max-height: calc(100svh - 120px);
+  align-self: center;
   overflow: hidden;
   background: #fff9fb;
   border-radius: 12px;
 }
 
+/* 画像レイヤー共通 */
 .character img {
   position: absolute;
   inset: 0;
@@ -75,7 +101,7 @@ body {
 /* 背景 */
 .background-layer {
   z-index: 0;
-  object-fit: cover !important;
+  object-fit: contain !important;
 }
 
 /* 素体 */
@@ -136,7 +162,10 @@ body {
   margin-top: 12px;
 }
 
-/* クローゼット側 */
+/* =========================
+   クローゼット側
+========================= */
+
 .closet-panel {
   display: flex;
   flex-direction: column;
@@ -155,7 +184,10 @@ body {
   line-height: 1.4;
 }
 
-/* カテゴリボタン */
+/* =========================
+   カテゴリボタン
+========================= */
+
 #categories {
   display: flex;
   flex-wrap: wrap;
@@ -163,7 +195,10 @@ body {
   margin: 8px 0 12px;
 }
 
-/* アイテム一覧 */
+/* =========================
+   アイテム一覧
+========================= */
+
 .items {
   flex: 1;
   min-height: 0;
@@ -192,7 +227,10 @@ body {
   border-radius: 10px;
 }
 
-/* アイテムカード */
+/* =========================
+   アイテムカード
+========================= */
+
 .item {
   border: 2px solid #f5e7ed;
   border-radius: 10px;
@@ -219,7 +257,10 @@ body {
   margin: 5px 0;
 }
 
-/* ボタン共通 */
+/* =========================
+   ボタン共通
+========================= */
+
 button {
   border: 0;
   border-radius: 9px;
@@ -235,7 +276,10 @@ button:hover {
   background: #e9bfd0;
 }
 
-/* アイテム受け取りエリア */
+/* =========================
+   アイテム受け取りエリア
+========================= */
+
 #claim-area {
   max-width: 450px;
   margin: 0 auto 12px;
@@ -256,65 +300,10 @@ button:hover {
   font-weight: bold;
 }
 
-/* スマホ表示 */
-@media (max-width: 700px) {
-  body {
-    padding: 8px;
-  }
+/* =========================
+   スマホ縦向き
+========================= */
 
-  .game {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 8px;
-    height: calc(100vh - 16px);
-    height: calc(100svh - 16px);
-  }
-
-  .character-panel,
-  .closet-panel {
-    padding: 8px;
-  }
-
-  .character-panel h2,
-  .closet-panel h2 {
-    font-size: 14px;
-  }
-
-  .items {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 5px;
-  }
-
-  #collection-count {
-    margin: 3px 0;
-    font-size: 12px;
-  }
-
-  #categories {
-    gap: 2px;
-    margin: 6px 0 8px;
-  }
-
-  #categories button {
-    font-size: 10px;
-    padding: 6px 4px;
-    margin: 1px;
-  }
-
-  button {
-    font-size: 11px;
-    padding: 7px 5px;
-  }
-
-  .item {
-    padding: 3px;
-  }
-
-  .item p {
-    font-size: 10px;
-  }
-}
-
-/* スマホ縦向きのとき */
 @media screen and (max-width: 700px) and (orientation: portrait) {
   body {
     overflow: hidden;
@@ -340,7 +329,10 @@ button:hover {
   }
 }
 
-/* スマホ横向きのとき */
+/* =========================
+   スマホ横向き
+========================= */
+
 @media screen and (max-width: 900px) and (orientation: landscape) {
   body {
     padding: 6px;
@@ -362,6 +354,12 @@ button:hover {
   .closet-panel h2 {
     font-size: 13px;
     margin: 4px 0;
+  }
+
+  /* 横向きでも68:88を維持 */
+  .character {
+    width: min(100%, calc((100svh - 80px) * 68 / 88));
+    max-height: calc(100svh - 80px);
   }
 
   .items {
@@ -395,34 +393,5 @@ button:hover {
 
   #reset-button {
     margin-top: 5px;
-  }
-}
-
-/* 画面の高さに合わせてゲーム全体を広げる */
-html,
-body {
-  min-height: 100%;
-}
-
-body {
-  min-height: 100vh;
-  min-height: 100svh;
-}
-
-.game {
-  height: calc(100vh - 32px);
-  height: calc(100svh - 32px);
-  min-height: 0;
-}
-
-/* スマホ横向き */
-@media screen and (max-width: 900px) and (orientation: landscape) {
-  body {
-    padding: 6px;
-  }
-
-  .game {
-    height: calc(100vh - 12px);
-    height: calc(100svh - 12px);
   }
 }
