@@ -475,3 +475,163 @@ setInitialItems();
 updateTopBottomOrder();
 updateBaseParts();
 renderItems();
+
+
+// =========================
+// コーデ画像のJPEG保存
+// =========================
+const saveCoordinateButton = document.getElementById("save-coordinate-button");
+const saveModal = document.getElementById("save-modal");
+const savedCoordinatePreview = document.getElementById("saved-coordinate-preview");
+const downloadJpegButton = document.getElementById("download-jpeg-button");
+const closeSaveModalButton = document.getElementById("close-save-modal-button");
+
+let currentJpegBlob = null;
+let currentJpegUrl = null;
+
+function waitForImage(image) {
+  if (image.complete && image.naturalWidth > 0) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    image.addEventListener("load", resolve, { once: true });
+    image.addEventListener("error", () => {
+      reject(new Error(`画像を読み込めませんでした: ${image.src}`));
+    }, { once: true });
+  });
+}
+
+function drawImageFitted(context, image, width, height) {
+  const fit = getComputedStyle(image).objectFit || "contain";
+
+  if (fit === "fill") {
+    context.drawImage(image, 0, 0, width, height);
+    return;
+  }
+
+  const imageRatio = image.naturalWidth / image.naturalHeight;
+  const canvasRatio = width / height;
+
+  if (fit === "cover") {
+    let sx = 0, sy = 0;
+    let sw = image.naturalWidth, sh = image.naturalHeight;
+
+    if (imageRatio > canvasRatio) {
+      sw = image.naturalHeight * canvasRatio;
+      sx = (image.naturalWidth - sw) / 2;
+    } else {
+      sh = image.naturalWidth / canvasRatio;
+      sy = (image.naturalHeight - sh) / 2;
+    }
+
+    context.drawImage(image, sx, sy, sw, sh, 0, 0, width, height);
+    return;
+  }
+
+  // object-fit: contain
+  let drawWidth = width;
+  let drawHeight = height;
+
+  if (imageRatio > canvasRatio) {
+    drawHeight = width / imageRatio;
+  } else {
+    drawWidth = height * imageRatio;
+  }
+
+  context.drawImage(
+    image,
+    (width - drawWidth) / 2,
+    (height - drawHeight) / 2,
+    drawWidth,
+    drawHeight
+  );
+}
+
+async function createCoordinateJpeg() {
+  const character = document.querySelector(".character");
+  const images = Array.from(character.querySelectorAll("img"));
+
+  const visibleImages = images.filter(image =>
+    !image.hidden &&
+    image.getAttribute("src") &&
+    getComputedStyle(image).display !== "none"
+  );
+
+  await Promise.all(visibleImages.map(waitForImage));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 680;
+  canvas.height = 880;
+
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("画像を作成できませんでした。");
+
+  // JPEGには透明部分がないため、背景色を敷く
+  context.fillStyle = "#fff9fb";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 画面上のz-index順で合成し、同じ値ならHTML順を維持
+  const sortedImages = visibleImages
+    .map((image, index) => ({
+      image,
+      index,
+      zIndex: Number.parseInt(getComputedStyle(image).zIndex, 10) || 0
+    }))
+    .sort((a, b) => a.zIndex - b.zIndex || a.index - b.index);
+
+  for (const entry of sortedImages) {
+    drawImageFitted(context, entry.image, canvas.width, canvas.height);
+  }
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => {
+      if (blob) resolve(blob);
+      else reject(new Error("JPEG画像の作成に失敗しました。"));
+    }, "image/jpeg", 0.88);
+  });
+}
+
+saveCoordinateButton.addEventListener("click", async () => {
+  saveCoordinateButton.disabled = true;
+  saveCoordinateButton.textContent = "画像を作成中…";
+
+  try {
+    const blob = await createCoordinateJpeg();
+
+    if (currentJpegUrl) URL.revokeObjectURL(currentJpegUrl);
+
+    currentJpegBlob = blob;
+    currentJpegUrl = URL.createObjectURL(blob);
+    savedCoordinatePreview.src = currentJpegUrl;
+    saveModal.hidden = false;
+  } catch (error) {
+    console.error(error);
+    alert("画像を作成できませんでした。画像ファイルの場所や読み込み状態を確認してね。");
+  } finally {
+    saveCoordinateButton.disabled = false;
+    saveCoordinateButton.textContent = "コーデ画像を保存";
+  }
+});
+
+downloadJpegButton.addEventListener("click", () => {
+  if (!currentJpegBlob || !currentJpegUrl) return;
+
+  const link = document.createElement("a");
+  link.href = currentJpegUrl;
+  link.download = "my-coordinate.jpg";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+});
+
+function closeSaveModal() {
+  saveModal.hidden = true;
+}
+
+closeSaveModalButton.addEventListener("click", closeSaveModal);
+
+saveModal.addEventListener("click", event => {
+  if (event.target === saveModal) closeSaveModal();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !saveModal.hidden) closeSaveModal();
+});

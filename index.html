@@ -40,7 +40,10 @@
         <img id="accessory" class="layer" alt="">
       </div>
 
-      <button id="reset-button">コーデをリセット</button>
+      <div class="character-buttons">
+        <button id="save-coordinate-button" type="button">コーデ画像を保存</button>
+        <button id="reset-button" type="button">コーデをリセット</button>
+      </div>
     </section>
 
     <!-- クローゼットエリア -->
@@ -67,6 +70,19 @@
     </section>
 
   </main>
+
+  <!-- 完成コーデの拡大表示 -->
+  <section id="save-modal" class="save-modal" hidden
+           role="dialog" aria-modal="true" aria-labelledby="save-modal-title">
+    <div class="save-modal-content">
+      <h2 id="save-modal-title">コーデ完成！</h2>
+      <img id="saved-coordinate-preview" alt="完成したコーデ">
+      <div class="save-modal-buttons">
+        <button id="download-jpeg-button" type="button">JPEGで保存</button>
+        <button id="close-save-modal-button" type="button">閉じる</button>
+      </div>
+    </div>
+  </section>
 
   <script src="script.js"></script>
 </body>
