@@ -1,6 +1,7 @@
 
 // 衣装・背景データ
 const items = [
+  // 髪型
   {
     id: "hair001",
     name: "みつあみ",
@@ -15,6 +16,8 @@ const items = [
     image: "images/hair002.png",
     thumbnail: "images/thumbnails/hair002.jpg"
   },
+
+  // トップス
   {
     id: "top001",
     name: "シャツ",
@@ -22,6 +25,15 @@ const items = [
     image: "images/top001.png",
     thumbnail: "images/thumbnails/top001.jpg"
   },
+  {
+    id: "top002",
+    name: "ゴシックトップス",
+    category: "top",
+    image: "images/top002.png",
+    thumbnail: "images/thumbnails/top002.jpg"
+  },
+
+  // ボトムス
   {
     id: "bottom001",
     name: "ストライプスカート",
@@ -38,12 +50,32 @@ const items = [
     hideBase: ["legs"]
   },
   {
+    id: "bottom003",
+    name: "ゴシックスカート",
+    category: "bottom",
+    image: "images/bottom003.png",
+    thumbnail: "images/thumbnails/bottom003.jpg"
+  },
+
+  // ワンピース
+  {
     id: "onepiece001",
     name: "ワンピース",
     category: "onepiece",
     image: "images/onepiece001.png",
     thumbnail: "images/thumbnails/onepiece001.jpg"
   },
+
+  // アウター
+  {
+    id: "outer001",
+    name: "アウター",
+    category: "outer",
+    image: "images/outer001.png",
+    thumbnail: "images/thumbnails/outer001.jpg"
+  },
+
+  // 靴
   {
     id: "shoes001",
     name: "シューズ",
@@ -58,6 +90,8 @@ const items = [
     image: "images/shoes002.png",
     thumbnail: "images/thumbnails/shoes002.jpg"
   },
+
+  // アクセサリー
   {
     id: "accessory001",
     name: "リボン",
@@ -102,9 +136,12 @@ const starterItems = [
   "hair001",
   "hair002",
   "top001",
+  "top002",
   "bottom001",
   "bottom002",
+  "bottom003",
   "onepiece001",
+  "outer001",
   "shoes001",
   "shoes002",
   "accessory001",
@@ -128,6 +165,11 @@ try {
 } catch {
   savedItems = [];
 }
+
+// 旧ID inner001 を新ID top002 に移行
+savedItems = savedItems.map(id => {
+  return id === "inner001" ? "top002" : id;
+});
 
 // 初期所持アイテムを統合
 let ownedItems = [...new Set([
@@ -158,11 +200,12 @@ const backgroundLayer =
 
 // 衣装レイヤー
 const layers = {
-  hair: document.getElementById("hair"),
-  top: document.getElementById("top"),
-  bottom: document.getElementById("bottom"),
-  onepiece: document.getElementById("onepiece"),
   shoes: document.getElementById("shoes"),
+  bottom: document.getElementById("bottom"),
+  top: document.getElementById("top"),
+  onepiece: document.getElementById("onepiece"),
+  outer: document.getElementById("outer"),
+  hair: document.getElementById("hair"),
   accessory: document.getElementById("accessory")
 };
 
@@ -178,20 +221,35 @@ const resetButton =
 
 let currentCategory = "all";
 
+// トップスとボトムスの前後関係
+// 初期状態ではトップスが手前
+let topBottomFront = "top";
+
+function updateTopBottomOrder() {
+  if (topBottomFront === "top") {
+    layers.top.style.zIndex = "7";
+    layers.bottom.style.zIndex = "6";
+  } else {
+    layers.top.style.zIndex = "6";
+    layers.bottom.style.zIndex = "7";
+  }
+}
+
 // 現在着ている衣装
 const equippedItems = {
-  hair: null,
-  top: null,
-  bottom: null,
-  onepiece: null,
   shoes: null,
+  bottom: null,
+  top: null,
+  onepiece: null,
+  outer: null,
+  hair: null,
   accessory: null
 };
 
 // 現在選択している背景
 let equippedBackground = null;
 
-// 初期装備を設定
+// 初期装備
 function setInitialItems() {
   const initialHair = items.find(
     item => item.id === "hair001"
@@ -239,7 +297,7 @@ function equipItem(item) {
   // 背景の場合
   if (item.category === "background") {
 
-    // 選択中の背景を押しても解除しない
+    // 選択中の背景は脱げない
     if (equippedBackground?.id === item.id) {
       return;
     }
@@ -251,15 +309,14 @@ function equipItem(item) {
     return;
   }
 
-  // 衣装の場合
   const layer = layers[item.category];
 
   if (!layer) return;
 
-  // 髪型は脱げない
+  // 髪型の場合
   if (item.category === "hair") {
 
-    // 選択中の髪型なら何もしない
+    // 選択中の髪型は脱げない
     if (equippedItems.hair?.id === item.id) {
       return;
     }
@@ -275,10 +332,20 @@ function equipItem(item) {
   if (equippedItems[item.category]?.id === item.id) {
     layer.removeAttribute("src");
     equippedItems[item.category] = null;
+
   } else {
     // 違う衣装なら着替える
     layer.src = item.image;
     equippedItems[item.category] = item;
+
+    // トップス・ボトムスをタップした順番で前後変更
+    if (
+      item.category === "top" ||
+      item.category === "bottom"
+    ) {
+      topBottomFront = item.category;
+      updateTopBottomOrder();
+    }
   }
 
   updateBaseParts();
@@ -332,10 +399,9 @@ categoryButtons.forEach(button => {
 // コーデをリセット
 resetButton.addEventListener("click", () => {
 
-  // 衣装をすべて外す
+  // 髪型以外の衣装を外す
   Object.keys(layers).forEach(category => {
 
-    // 髪型は初期装備を維持
     if (category === "hair") return;
 
     const layer = layers[category];
@@ -347,8 +413,11 @@ resetButton.addEventListener("click", () => {
     equippedItems[category] = null;
   });
 
-  // 背景は初期装備を維持
-  // room001に戻す
+  // トップスとボトムスの前後関係を初期状態に戻す
+  topBottomFront = "top";
+  updateTopBottomOrder();
+
+  // 初期髪型・背景に戻す
   setInitialItems();
 
   updateBaseParts();
@@ -403,5 +472,6 @@ if (claimItem) {
 
 // 最初の表示
 setInitialItems();
+updateTopBottomOrder();
 updateBaseParts();
 renderItems();

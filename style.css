@@ -12,7 +12,6 @@ body {
   overflow: hidden;
 }
 
-/* ゲーム全体 */
 .game {
   display: grid;
   grid-template-columns: minmax(0, 350px) minmax(0, 520px);
@@ -36,7 +35,7 @@ body {
   min-height: 0;
 }
 
-/* キャラクターエリア */
+/* キャラクター側 */
 .character-panel {
   display: flex;
   flex-direction: column;
@@ -50,19 +49,17 @@ body {
   flex-shrink: 0;
 }
 
-/* キャラクター表示 */
 .character {
   position: relative;
   width: 100%;
-  aspect-ratio: 63 / 88;
-  flex: none;
+  flex: 1;
   min-height: 0;
+  aspect-ratio: 63 / 88;
   overflow: hidden;
   background: #fff9fb;
   border-radius: 12px;
 }
 
-/* 画像共通 */
 .character img {
   position: absolute;
   inset: 0;
@@ -71,14 +68,17 @@ body {
   object-fit: contain;
 }
 
-/* 背景 */
-.character img.background-layer {
-  object-fit: cover;
-  z-index: 0;
+.character img.layer {
   pointer-events: none;
 }
 
-/* ベース画像 */
+/* 背景 */
+.background-layer {
+  z-index: 0;
+  object-fit: cover !important;
+}
+
+/* 素体 */
 #base-body {
   z-index: 1;
 }
@@ -91,39 +91,43 @@ body {
   z-index: 3;
 }
 
-/* 衣装の重なり順 */
+/* 着せ替えレイヤー */
 #shoes {
   z-index: 4;
-}
-
-#top {
-  z-index: 5;
 }
 
 #bottom {
   z-index: 6;
 }
 
-#onepiece {
+#top {
   z-index: 7;
 }
 
-#hair {
+#onepiece {
   z-index: 8;
 }
 
-#accessory {
+#outer {
   z-index: 9;
 }
 
-/* 非表示パーツ */
+#hair {
+  z-index: 10;
+}
+
+#accessory {
+  z-index: 11;
+}
+
+/* 空の画像を非表示 */
 .character img[hidden] {
   display: none;
 }
 
-/* 着せ替え画像 */
-.character img.layer {
-  pointer-events: none;
+.character img:not([src]),
+.character img[src=""] {
+  display: none;
 }
 
 /* リセットボタン */
@@ -132,7 +136,7 @@ body {
   margin-top: 12px;
 }
 
-/* クローゼット */
+/* クローゼット側 */
 .closet-panel {
   display: flex;
   flex-direction: column;
@@ -140,19 +144,23 @@ body {
   overflow: hidden;
 }
 
-/* 固定部分 */
 .closet-panel h2,
 #collection-count,
 #categories {
   flex-shrink: 0;
 }
 
-/* カテゴリー */
+#collection-count {
+  margin: 4px 0;
+  line-height: 1.4;
+}
+
+/* カテゴリボタン */
 #categories {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  margin: 15px 0;
+  margin: 8px 0 12px;
 }
 
 /* アイテム一覧 */
@@ -162,17 +170,14 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-content: start;
   gap: 10px;
-
   scrollbar-width: thin;
   scrollbar-color: #dba6ba #fff0f5;
 }
 
-/* スクロールバー */
 .items::-webkit-scrollbar {
   width: 8px;
 }
@@ -187,7 +192,7 @@ body {
   border-radius: 10px;
 }
 
-/* アイテム */
+/* アイテムカード */
 .item {
   border: 2px solid #f5e7ed;
   border-radius: 10px;
@@ -214,7 +219,7 @@ body {
   margin: 5px 0;
 }
 
-/* ボタン */
+/* ボタン共通 */
 button {
   border: 0;
   border-radius: 9px;
@@ -230,7 +235,7 @@ button:hover {
   background: #e9bfd0;
 }
 
-/* NEW ITEM */
+/* アイテム受け取りエリア */
 #claim-area {
   max-width: 450px;
   margin: 0 auto 12px;
@@ -251,7 +256,7 @@ button:hover {
   font-weight: bold;
 }
 
-/* スマホ */
+/* スマホ表示 */
 @media (max-width: 700px) {
   body {
     padding: 8px;
@@ -279,9 +284,14 @@ button:hover {
     gap: 5px;
   }
 
+  #collection-count {
+    margin: 3px 0;
+    font-size: 12px;
+  }
+
   #categories {
     gap: 2px;
-    margin: 8px 0;
+    margin: 6px 0 8px;
   }
 
   #categories button {
@@ -304,8 +314,86 @@ button:hover {
   }
 }
 
-/* 画像が設定されていないレイヤーは非表示 */
-.character img:not([src]),
-.character img[src=""] {
-  display: none;
+/* スマホ縦向きのとき */
+@media screen and (max-width: 700px) and (orientation: portrait) {
+  body {
+    overflow: hidden;
+  }
+
+  .game {
+    display: none;
+  }
+
+  body::after {
+    content: "スマートフォンを横向きにして遊んでね！";
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    background: #f8edf1;
+    color: #57434c;
+  }
+}
+
+/* スマホ横向きのとき */
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  body {
+    padding: 6px;
+  }
+
+  .game {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 8px;
+    height: calc(100vh - 12px);
+    height: calc(100svh - 12px);
+  }
+
+  .character-panel,
+  .closet-panel {
+    padding: 8px;
+  }
+
+  .character-panel h2,
+  .closet-panel h2 {
+    font-size: 13px;
+    margin: 4px 0;
+  }
+
+  .items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  #categories {
+    gap: 2px;
+    margin: 5px 0;
+  }
+
+  #categories button {
+    font-size: 10px;
+    padding: 5px 6px;
+    margin: 1px;
+  }
+
+  button {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .item {
+    padding: 3px;
+  }
+
+  .item p {
+    font-size: 10px;
+  }
+
+  #reset-button {
+    margin-top: 5px;
+  }
 }

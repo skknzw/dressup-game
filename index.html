@@ -7,44 +7,37 @@
   <title>My Closet</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <!-- QRコードから衣装を受け取るエリア -->
+  <!-- 新着アイテム受け取りエリア -->
   <section id="claim-area" hidden>
     <h2>NEW ITEM!</h2>
-    <p id="claim-name">新しい衣装が届いたよ！</p>
+    <p id="claim-name">新しいアイテムが届いたよ！</p>
     <button id="claim-button">クローゼットに追加する</button>
   </section>
 
   <main class="game">
 
-    <!-- キャラクターエリア -->
+    <!-- キャラクター表示エリア -->
     <section class="character-panel">
       <h2>MY COORDINATE</h2>
 
       <div class="character">
+        <img id="background" class="background-layer" alt="">
 
-        <!-- 背景 -->
-        <img
-          id="background"
-          class="background-layer"
-          alt=""
-        >
-
-        <!-- ベース画像 -->
+        <!-- 素体 -->
         <img src="images/base-body.png" id="base-body" alt="">
         <img src="images/base-arms.png" id="base-arms" alt="">
         <img src="images/base-legs.png" id="base-legs" alt="">
 
-        <!-- 着せ替え画像 -->
-        <img id="hair" class="layer" alt="">
-        <img id="top" class="layer" alt="">
-        <img id="bottom" class="layer" alt="">
-        <img id="onepiece" class="layer" alt="">
+        <!-- 着せ替えレイヤー -->
         <img id="shoes" class="layer" alt="">
+        <img id="bottom" class="layer" alt="">
+        <img id="top" class="layer" alt="">
+        <img id="onepiece" class="layer" alt="">
+        <img id="outer" class="layer" alt="">
+        <img id="hair" class="layer" alt="">
         <img id="accessory" class="layer" alt="">
-
       </div>
 
       <button id="reset-button">コーデをリセット</button>
@@ -56,7 +49,7 @@
 
       <p id="collection-count">所持アイテム：0種類</p>
 
-      <!-- カテゴリー -->
+      <!-- カテゴリ切り替え -->
       <nav id="categories">
         <button data-category="all">全部</button>
         <button data-category="background">背景</button>
@@ -64,18 +57,17 @@
         <button data-category="top">トップス</button>
         <button data-category="bottom">ボトムス</button>
         <button data-category="onepiece">ワンピース</button>
+        <button data-category="outer">アウター</button>
         <button data-category="shoes">靴</button>
         <button data-category="accessory">アクセ</button>
       </nav>
 
       <!-- アイテム一覧 -->
       <div id="items" class="items"></div>
-
     </section>
 
   </main>
 
   <script src="script.js"></script>
-
 </body>
 </html>
